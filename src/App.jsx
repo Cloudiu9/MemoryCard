@@ -9,6 +9,7 @@ export default function App() {
 
   const API_URL = "https://ddragon.leagueoflegends.com/cdn/16.1.1/";
 
+  // Setting a random champ/skin as background
   useEffect(() => {
     let isActive = true; // Cleanup flag
     const fetchBackground = async () => {
@@ -22,11 +23,10 @@ export default function App() {
         allChamps[Math.floor(Math.random() * allChamps.length)];
       // Making a random number 1-4 (assuming all champs have at least 4 skins)
       const randomNum = Math.floor(Math.random() * 4) || 1;
-      console.log(randomNum);
 
       // Make default something safe in case champ younger than Zoe (by release date)
       const image = BACKGROUND_URL + `${randomName}_${randomNum}.jpg`;
-      const fallbackImage = BACKGROUND_URL + "Aatrox_0.jpg";
+      const fallbackImage = BACKGROUND_URL + "Belveth_1.jpg";
 
       const img = new Image();
       img.src = image;
@@ -50,12 +50,13 @@ export default function App() {
   return (
     <div
       style={{
-        height: 100 + "vh",
+        height: "100vh",
         backgroundImage: `url(${bgImage})`,
         backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
+        backgroundPosition: "center top",
+        backgroundSize: "100% auto",
         transition: "background-image 0.5s ease-in-out",
+        opacity: "80%",
       }}
       id="App"
     >

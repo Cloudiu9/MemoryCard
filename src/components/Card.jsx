@@ -2,9 +2,9 @@
 
 // ONLY on page load, get 1 random img for each card
 
-export default function Card({ name, image }) {
+export default function Card({ name, image, handleClick }) {
   return (
-    <div className="card">
+    <div className="card" onClick={handleClick}>
       <img src={image} alt="Champ" />
       <h1>{name}</h1>
     </div>
