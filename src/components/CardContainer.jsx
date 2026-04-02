@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from "react";
 import Card from "./Card";
+import Popup from "./Popup";
 
 export default function CardContainer() {
   const API_URL = "https://ddragon.leagueoflegends.com/cdn/16.1.1/";
@@ -15,6 +16,8 @@ export default function CardContainer() {
   const [clickedCards, setClickedCards] = useState([]);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     // get random champ portrait + name
@@ -60,7 +63,6 @@ export default function CardContainer() {
         newArray[currentIndex],
       ];
     }
-    console.log("AAAA");
     return newArray;
   };
 
@@ -68,17 +70,18 @@ export default function CardContainer() {
     // on click, 'mark' cark
     setClickedCards([...clickedCards, id]);
 
-    console.log("Clicked. " + clickedCards);
-
     // shuffle card positions
     const shuffled = shuffleCards([...cards]);
     setCards(shuffled);
 
     // if clicked card is clicked again, lose
+    // guard clause with early return
+
     // https://stackoverflow.com/questions/45277306/check-if-item-exists-in-array-react
     if (clickedCards.includes(id)) {
-      // render You Lost! popup
-      alert("You Lost!");
+      // mark game as lost
+      setStatus("Lost");
+      setGameOver(true);
 
       // set highScore
       if (highScore < score) setHighScore(score);
@@ -86,15 +89,29 @@ export default function CardContainer() {
       // reset states on lose
       setClickedCards([]);
       setScore(0);
-    } else {
-      setClickedCards([...clickedCards, id]);
-      setScore((prevScore) => prevScore + 1);
-      console.log(score);
+      return;
     }
+
+    // mark game as won if score === 11  (difficulty * 6)
+    if (score === 11) {
+      if (highScore < score) setHighScore(12);
+      setClickedCards([]);
+      setScore(0);
+      setStatus("Won");
+      setGameOver(true);
+
+      return;
+    }
+
+    setClickedCards([...clickedCards, id]);
+    setScore((prevScore) => prevScore + 1);
+    setCards(shuffleCards(cards));
   }
 
   return (
     <>
+      {gameOver && <Popup msg={status} reset={() => setGameOver(false)} />}
+
       {/* scale/change padding depending on difficulty? */}
       <h1 style={{ padding: 20 + "px", paddingBottom: 10 + "px" }}>
         Memory Card Game
