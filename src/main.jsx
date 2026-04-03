@@ -22,10 +22,15 @@ TODO:
 2. Card has a state for the img, changes image when a card is clicked OR cards change positions when a card is clicked (?)
 
 
-EXTRA: TODO different difficulties (easy 6 cards, med 12, hard 18), save highscore through reloads (localStorage? / cookie?), message for game end (won => clicked all, lost => clicked repeat)
+EXTRA: 
+TODO different difficulties (easy 6 cards, med 12, hard 18)
+  - need to first display popup with difficulty choices on page load
+  - send through popup chosen difficulty
+DONE save highscore through reloads (localStorage? / cookie?)
+DONE message for game end (won => clicked all, lost => clicked repeat)
 
 TODO:
-- Fix responsiveness of cards (auto-fill?)
-- Make fetching dynamic and random
+- DONE Fix responsiveness of cards (auto-fill?)
+- DONE Make fetching dynamic and random
 
 */

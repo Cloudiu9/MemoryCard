@@ -12,12 +12,32 @@ import Popup from "./Popup";
 export default function CardContainer() {
   const API_URL = "https://ddragon.leagueoflegends.com/cdn/16.1.1/";
 
+  const [difficulty, setDifficulty] = useState(0);
+  const [gameStart, setGameStart] = useState(true);
+
   const [cards, setCards] = useState([]);
   const [clickedCards, setClickedCards] = useState([]);
+
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  // Retrieving highScore from localStorage on page load
+  const [highScore, setHighScore] = useState(() => {
+    const saved = localStorage.getItem("highScore");
+    return saved ? parseInt(saved) : 0;
+  });
+
   const [gameOver, setGameOver] = useState(false);
   const [status, setStatus] = useState("");
+
+  function handleGameStart(level) {
+    setDifficulty(level);
+    setGameStart(false);
+    setGameOver(false);
+  }
+
+  // When highscore changes, update it
+  useEffect(() => {
+    localStorage.setItem("highScore", highScore);
+  }, [highScore]);
 
   useEffect(() => {
     // get random champ portrait + name
@@ -33,7 +53,7 @@ export default function CardContainer() {
       // Need a Set so there's no duplicate champs
       // change 'size < difficulty * 6' ==> diff 1 = 6 cards, etc.
       const uniqueChamps = new Set();
-      for (let i = 0; uniqueChamps.size < 12; i++) {
+      for (let i = 0; uniqueChamps.size < difficulty * 6; i++) {
         const randomName =
           allChamps[Math.floor(Math.random() * allChamps.length)];
         uniqueChamps.add(data.data[randomName]);
@@ -42,7 +62,7 @@ export default function CardContainer() {
     };
 
     loadData();
-  }, []); // only on page load
+  }, [difficulty]); // only on page load
 
   // https://www.reddit.com/r/reactjs/comments/y4p2x4/cards_only_shuffle_when_you_click_the_first/
   const shuffleCards = (array) => {
@@ -80,7 +100,7 @@ export default function CardContainer() {
     // https://stackoverflow.com/questions/45277306/check-if-item-exists-in-array-react
     if (clickedCards.includes(id)) {
       // mark game as lost
-      setStatus("Lost");
+      setStatus("You Lost");
       setGameOver(true);
 
       // set highScore
@@ -92,12 +112,12 @@ export default function CardContainer() {
       return;
     }
 
-    // mark game as won if score === 11  (difficulty * 6)
-    if (score === 11) {
-      if (highScore < score) setHighScore(12);
+    // mark game as won if score === 11  (difficulty * 6) - 1
+    if (score === difficulty * 6 - 1) {
+      if (highScore < score) setHighScore(difficulty * 6);
       setClickedCards([]);
       setScore(0);
-      setStatus("Won");
+      setStatus("You Won");
       setGameOver(true);
 
       return;
@@ -110,7 +130,20 @@ export default function CardContainer() {
 
   return (
     <>
-      {gameOver && <Popup msg={status} reset={() => setGameOver(false)} />}
+      {gameStart && (
+        <Popup
+          difficulty={difficulty}
+          msg={"Select your difficulty"}
+          onSelectDifficulty={handleGameStart}
+        />
+      )}
+      {gameOver && (
+        <Popup
+          difficulty={difficulty}
+          msg={status}
+          onSelectDifficulty={handleGameStart}
+        />
+      )}
 
       {/* scale/change padding depending on difficulty? */}
       <h1 style={{ padding: 20 + "px", paddingBottom: 10 + "px" }}>

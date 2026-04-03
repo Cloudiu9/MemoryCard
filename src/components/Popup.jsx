@@ -1,5 +1,15 @@
 // used help for this
-export default function Popup({ msg, reset }) {
+function Button({ isActive, choice, onClick }) {
+  const className = `btn ${isActive ? "popupBtn" : "hidden"}`;
+
+  return (
+    <button className={className} onClick={onClick}>
+      {choice}
+    </button>
+  );
+}
+
+export default function Popup({ msg = "You", onSelectDifficulty }) {
   return (
     // Blocking overlay
     <div
@@ -27,21 +37,27 @@ export default function Popup({ msg, reset }) {
           textAlign: "center",
           boxShadow: "0px 4px 15px rgba(0,0,0,0.3)",
           minWidth: "250px",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <h2 style={{ color: msg === "Won" ? "green" : "red" }}>You {msg}!</h2>
-        <button
-          onClick={reset}
-          style={{
-            marginTop: "20px",
-            padding: "10px 20px",
-            cursor: "pointer",
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
-        >
-          Play Again
-        </button>
+        <h2 style={{ color: msg === "You Won" ? "green" : "red" }}>{msg}</h2>
+
+        <Button
+          isActive={true} // hidden or not
+          onClick={() => onSelectDifficulty(3)} // choose difficulty
+          choice={"Hard"} // displayed text
+        />
+        <Button
+          isActive={true}
+          onClick={() => onSelectDifficulty(2)}
+          choice={"Medium"}
+        />
+        <Button
+          isActive={true}
+          onClick={() => onSelectDifficulty(1)}
+          choice={"Easy"}
+        />
       </div>
     </div>
   );
